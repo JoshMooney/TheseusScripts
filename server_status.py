@@ -42,7 +42,7 @@ log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
 
 # Navigate to The correct directory
 theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
-os.chdir('theseus_jblog_dir')
+os.chdir(theseus_jblog_dir)
 
 # Check Git Status
 subprocess.check_output("git fetch", shell=True)
