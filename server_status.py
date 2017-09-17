@@ -6,7 +6,7 @@ from termcolor import colored
 def start_log():
 	print('|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|')
 def row_log():
-	print('|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|')
+	print('|---------------------------------------------------------------------------------------|')
 def end_log():
 	print('|_______________________________________________________________________________________|')
 
@@ -60,8 +60,7 @@ theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
 os.chdir(theseus_jblog_dir)
 
 # Check Git Status
-msg = subprocess.check_output("git fetch", shell=True)
-print msg
+subprocess.check_output("git fetch", shell=True)
 status = subprocess.check_output("git status", shell=True)
 print status
 git_msg = 'JBlog is behing by '
@@ -69,8 +68,8 @@ if ("up-to-date" in status):
 	git_msg = 'JBlog is up to date'
 	print (git_msg)
 else:
-	start = status.index('by', 100)
-	end = status.find(',', 100)
+	start = status.index('by', len(status))
+	end = status.find(',', len(status))
 	behind_msg = status[start: end]
 	print(git_msg + behind_msg)
 	
