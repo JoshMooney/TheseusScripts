@@ -6,6 +6,11 @@ from termcolor import colored
 template = "| {0:18} | {1:52} | {2:18} |"
 print template.format("SERVICE", "MESSAGE", "STATUS")
 
+def start_log():
+	print('|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|')
+def end_log():
+	print('|________________________________________________________________________________________|')
+
 def log(ser, msg, stat):
 	stat_col = 'red'
 	stat_msg = 'down'
@@ -13,6 +18,8 @@ def log(ser, msg, stat):
 		stat_col = 'green'
 		stat_msg = 'active'
 	print template.format(ser, msg, colored(stat_msg, stat_col))
+
+start_log()
 
 # Check Nginx staus
 status = subprocess.check_output("service nginx status", shell=True)
@@ -39,6 +46,12 @@ domain_result = False
 if (curl_extern.status_code is 200):
 	domain_result = True
 log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
+
+end_log()
+
+if domain_result and extern_result and local_result:
+	print ('')
+	print('-- JBlog is active! --')
 
 # Navigate to The correct directory
 theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
