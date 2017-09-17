@@ -60,12 +60,13 @@ theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
 os.chdir(theseus_jblog_dir)
 
 # Check Git Status
+print ('')
+print('-- JBlog Git Status --')
 subprocess.check_output("git fetch", shell=True)
 status = subprocess.check_output("git status", shell=True)
-print status
-git_msg = 'JBlog is behing by '
+git_msg = 'JBlog is '+ colored('behind', 'red') +' by '
 if ("up-to-date" in status):
-	git_msg = 'JBlog is up to date'
+	git_msg = 'JBlog is ' + colored('up-to-date', 'green')
 	print (git_msg)
 else:
 	start = status.find('by', 0, len(status))
