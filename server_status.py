@@ -35,10 +35,9 @@ check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
 check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
 check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
 
-ping_response = subprocess.Popen(["/bin/ping", "-c1", "-w100", "192.168.0.87"], stdout=subprocess.PIPE).stdout.read()
-print ping_response
+r = requests.get("192.168.0.87")
 aegon_status = False
-if ("HTTP/1.1 200 OK" in status):
+if (r.status_code is 200):
 	aegon_status = True
 log('AEGON', 'NetGear NAS @192.168.0.87', aegon_status)
 row_log()
