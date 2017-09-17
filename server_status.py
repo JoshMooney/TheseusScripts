@@ -47,25 +47,44 @@ if ("Active: active (running)" in status):
 log('SAMBA', 'Status of Samba server', samba_status)
 row_log()
 
-# Check JBlog access
-curl_local = requests.get('http://localhost:4000')
-local_result = False
-if (curl_local.status_code is 200):
-	local_result = True
-log('JBlog', 'Status via Localhost on port 4000', local_result)
-	
-curl_extern = requests.get('http://46.7.248.23:80/jblog')
-extern_result = False
-if (curl_extern.status_code is 200):
-	extern_result = True
-log('JBlog', 'Status via External IP on port 80', extern_result)
-	
-curl_domain = requests.get('http://www.Theseus.tk/jblog')
-domain_result = False
-if (curl_extern.status_code is 200):
-	domain_result = True
-log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
+def check_service(ser_name, ser_data):
+	status = subprocess.check_output("service "+ ser_name +" status", shell=True)
+	service_status = False
+	if ("Active: active (running)" in status):
+		service_status = True
+	log(ser_data['name'], ser_data['msg'], service_status)
+	row_log()
 
+check_service('smbd', {'name': 'SAMBA', 'msg': 'Other samba message'})
+
+# Check JBlog access
+class JBlog(object):
+	def local(self):
+		curl_local = requests.get('http://localhost:4000')
+		local_result = False
+		if (curl_local.status_code is 200):
+			local_result = True
+		log('JBlog', 'Status via Localhost on port 4000', local_result)
+		
+	def external(self):
+		curl_extern = requests.get('http://46.7.248.23:80/jblog')
+		extern_result = False
+		if (curl_extern.status_code is 200):
+			extern_result = True
+		log('JBlog', 'Status via External IP on port 80', extern_result)
+
+	def domain(self):	
+		curl_domain = requests.get('http://www.Theseus.tk/jblog')
+		domain_result = False
+		if (curl_extern.status_code is 200):
+			domain_result = True
+		log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
+
+jblog_check = JBlog()
+
+jblog_check.local()
+jblog_check.external()
+jblog_check.domain()
 end_log()
 
 if domain_result and extern_result and local_result:
@@ -83,7 +102,7 @@ subprocess.check_output("git fetch", shell=True)
 status = subprocess.check_output("git status", shell=True)
 git_msg = 'JBlog is '+ colored('behind', 'red') +' by '
 if ("up-to-date" in status):
-	git_msg = 'JBlog is ' + colored('up-to-date', 'green')
+	git_msg = 'JBlog is branch origin/master' + colored('up-to-date', 'green')
 	print (git_msg)
 else:
 	start = status.find('by', 0, len(status))
