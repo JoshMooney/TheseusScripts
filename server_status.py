@@ -35,6 +35,13 @@ check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
 check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
 check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
 
+aegon_status = subprocess.check_output("curl -v 192.168.0.87", shell=True)
+aegon_status = False
+if ("HTTP/1.1 200 OK" in aegon_status):
+	aegon_status = True
+log('AEGON', 'NetGear NAS @192.168.0.87', aegon_status)
+row_log()
+
 # Check JBlog access
 class JBlog(object):
 	def local(self):
@@ -71,12 +78,12 @@ os.chdir(theseus_jblog_dir)
 
 # Check Git Status
 print ('')
-print('-- JBlog Git Status --')
+print('-- Git Status --')
 subprocess.check_output("git fetch", shell=True)
 status = subprocess.check_output("git status", shell=True)
 git_msg = 'JBlog is '+ colored('behind', 'red') +' by '
 if ("up-to-date" in status):
-	git_msg = 'JBlog is branch origin/master' + colored('up-to-date', 'green')
+	git_msg = 'JBlog is branch origin/master ' + colored('up-to-date', 'green')
 	print (git_msg)
 else:
 	start = status.find('by', 0, len(status))
