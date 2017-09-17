@@ -53,7 +53,7 @@ end_log()
 
 if domain_result and extern_result and local_result:
 	print ('')
-	print('-- JBlog is active! --')
+	print('-- JBlog is full functional! --')
 
 # Navigate to The correct directory
 theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
@@ -68,8 +68,8 @@ if ("up-to-date" in status):
 	git_msg = 'JBlog is up to date'
 	print (git_msg)
 else:
-	start = status.index('by', len(status))
-	end = status.find(',', len(status))
+	start = status.find('by', 0, len(status))
+	end = status.find(',', 0, len(status))
 	behind_msg = status[start: end]
 	print(git_msg + behind_msg)
 	
