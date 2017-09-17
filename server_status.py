@@ -3,13 +3,12 @@ import requests
 import os
 from termcolor import colored
 
-template = "| {0:18} | {1:52} | {2:18} |"
-print template.format("SERVICE", "MESSAGE", "STATUS")
-
 def start_log():
-	print('|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|')
+	print('|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|')
+def row_log():
+	print('|^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^|')
 def end_log():
-	print('|________________________________________________________________________________________|')
+	print('|_______________________________________________________________________________________|')
 
 def log(ser, msg, stat):
 	stat_col = 'red'
@@ -20,6 +19,9 @@ def log(ser, msg, stat):
 	print template.format(ser, msg, colored(stat_msg, stat_col))
 
 start_log()
+template = "| {0:18} | {1:52} | {2:18} |"
+print template.format("SERVICE", "MESSAGE", "STATUS")
+row_log()
 
 # Check Nginx staus
 status = subprocess.check_output("service nginx status", shell=True)
@@ -58,8 +60,10 @@ theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
 os.chdir(theseus_jblog_dir)
 
 # Check Git Status
-subprocess.check_output("git fetch", shell=True)
+msg = subprocess.check_output("git fetch", shell=True)
+print msg
 status = subprocess.check_output("git status", shell=True)
+print status
 git_msg = 'JBlog is behing by '
 if ("up-to-date" in status):
 	git_msg = 'JBlog is up to date'
