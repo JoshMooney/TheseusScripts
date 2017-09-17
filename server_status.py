@@ -23,30 +23,6 @@ template = "| {0:18} | {1:52} | {2:18} |"
 print template.format("SERVICE", "MESSAGE", "STATUS")
 row_log()
 
-# Check Nginx staus
-status = subprocess.check_output("service nginx status", shell=True)
-nginx_status = False
-if ("Active: active (running)" in status):
-	nginx_status = True
-log('NGINX', 'Status of nginx', nginx_status)
-row_log()
-
-# Transmission status
-status = subprocess.check_output("service transmission-daemon status", shell=True)
-trans_status = False
-if ("Active: active (running)" in status):
-	trans_status = True
-log('TRANSMISSION', 'Status of transmission-daemon', trans_status)
-row_log()
-
-# Samba status
-status = subprocess.check_output("service smbd status", shell=True)
-samba_status = False
-if ("Active: active (running)" in status):
-	samba_status = True
-log('SAMBA', 'Status of Samba server', samba_status)
-row_log()
-
 def check_service(ser_name, ser_data):
 	status = subprocess.check_output("service "+ ser_name +" status", shell=True)
 	service_status = False
@@ -55,7 +31,9 @@ def check_service(ser_name, ser_data):
 	log(ser_data['name'], ser_data['msg'], service_status)
 	row_log()
 
-check_service('smbd', {'name': 'SAMBA', 'msg': 'Other samba message'})
+check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
+check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
+check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
 
 # Check JBlog access
 class JBlog(object):
