@@ -29,6 +29,23 @@ nginx_status = False
 if ("Active: active (running)" in status):
 	nginx_status = True
 log('NGINX', 'Status of nginx', nginx_status)
+row_log()
+
+# Transmission status
+status = subprocess.check_output("service transmission-daemon status", shell=True)
+trans_status = False
+if ("Active: active (running)" in status):
+	trans_status = True
+log('TRANSMISSION', 'Status of transmission-daemon', trans_status)
+row_log()
+
+# Samba status
+status = subprocess.check_output("service smbd status", shell=True)
+samba_status = False
+if ("Active: active (running)" in status):
+	samba_status = True
+log('SAMBA', 'Status of Samba server', samba_status)
+row_log()
 
 # Check JBlog access
 curl_local = requests.get('http://localhost:4000')
