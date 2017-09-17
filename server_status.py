@@ -35,10 +35,15 @@ check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
 check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
 check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
 
-r = requests.get("192.168.0.87")
 aegon_status = False
-if (r.status_code is 200):
-	aegon_status = True
+try:
+	r = requests.get("http://192.168.0.87")
+	if (r.status_code is 200):
+		aegon_status = True
+except Exception, err
+	aegon_status = False
+
+
 log('AEGON', 'NetGear NAS @192.168.0.87', aegon_status)
 row_log()
 
