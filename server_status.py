@@ -53,24 +53,33 @@ row_log()
 # Check JBlog access
 class JBlog(object):
 	def local(self):
-		curl_local = requests.get('http://localhost:4000')
 		local_result = False
-		if (curl_local.status_code is 200):
-			local_result = True
+		try:
+			curl_local = requests.get('http://localhost:4000')
+			if (curl_local.status_code is 200):
+				local_result = True
+		except Exception, err:
+			local_result = False
 		log('JBlog', 'Status via Localhost on port 4000', local_result)
 		
 	def external(self):
-		curl_extern = requests.get('http://46.7.248.23:80/jblog')
 		extern_result = False
-		if (curl_extern.status_code is 200):
-			extern_result = True
+		try:
+			curl_extern = requests.get('http://46.7.248.23:80/jblog')
+			if (curl_extern.status_code is 200):
+				extern_result = True
+		except Exception, err:
+			extern_result = False
 		log('JBlog', 'Status via External IP on port 80', extern_result)
 
 	def domain(self):	
-		curl_domain = requests.get('http://www.Theseus.tk/jblog')
 		domain_result = False
-		if (curl_domain.status_code is 200):
-			domain_result = True
+		try:
+			curl_domain = requests.get('http://www.Theseus.tk/jblog')
+			if (curl_domain.status_code is 200):
+				domain_result = True
+		except Exception, err:
+			domain_result = False
 		log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
 
 jblog_check = JBlog()
