@@ -54,7 +54,7 @@ class JBlog(object):
 	def domain(self):	
 		curl_domain = requests.get('http://www.Theseus.tk/jblog')
 		domain_result = False
-		if (curl_extern.status_code is 200):
+		if (curl_domain.status_code is 200):
 			domain_result = True
 		log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
 
@@ -64,10 +64,6 @@ jblog_check.local()
 jblog_check.external()
 jblog_check.domain()
 end_log()
-
-if domain_result and extern_result and local_result:
-	print ('')
-	print('-- JBlog is full functional! --')
 
 # Navigate to The correct directory
 theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
