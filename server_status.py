@@ -24,10 +24,13 @@ print template.format("SERVICE", "MESSAGE", "STATUS")
 row_log()
 
 def check_service(ser_name, ser_data):
-	status = subprocess.check_output("service "+ ser_name +" status", shell=True)
 	service_status = False
-	if ("Active: active (running)" in status):
-		service_status = True
+	try:
+		status = subprocess.check_output("service "+ ser_name +" status", shell=True)
+		if ("Active: active (running)" in status):
+			service_status = True
+	except Exception, err:
+		service_status = False
 	log(ser_data['name'], ser_data['msg'], service_status)
 	row_log()
 
@@ -40,7 +43,7 @@ try:
 	r = requests.get("http://192.168.0.87")
 	if (r.status_code is 200):
 		aegon_status = True
-except Exception, err
+except Exception, err:
 	aegon_status = False
 
 
