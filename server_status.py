@@ -1,5 +1,6 @@
 import subprocess
 import requests
+import os
 from termcolor import colored
 
 template = "| {0:18} | {1:52} | {2:18} |"
@@ -39,8 +40,13 @@ if (curl_extern.status_code is 200):
 	domain_result = True
 log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
 
+# Navigate to The correct directory
+theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
+os.chdir('theseus_jblog_dir')
+
 # Check Git Status
-status = subprocess.check_output("service nginx status", shell=True)
+subprocess.check_output("git fetch", shell=True)
+status = subprocess.check_output("git status", shell=True)
 git_msg = 'JBlog is behing by '
 if ("up-to-date" in status):
 	git_msg = 'JBlog is up to date'
