@@ -1,6 +1,7 @@
 import subprocess
 import requests
 import os
+import platform
 from termcolor import colored
 
 def start_log():
@@ -108,7 +109,19 @@ else:
 	behind_msg = status[start: end]
 	print(git_msg + behind_msg)
 	
-
+# Get server uptime
+print ('')
+print('-- Server Uptime --')
+try:
+	status = subprocess.check_output("uptime", shell=True)
+	start = status.find('up', 0, len(status))
+	end = status.find(',', 0, len(status))
+	up_time = status[start: end]
+	comp_name = platform.node()
+	print(comp_name+ " server has been " + up_time)
+except Exception, err:
+	print err
+	print "Error getting uptime."
 	
 	
 
