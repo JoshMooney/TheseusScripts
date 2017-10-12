@@ -9,6 +9,10 @@ print('-- Running Startup Script --')
 
 # start jblog 
 
+# start api
+
+# start film-calender-ui
+
 # Run status script
 
 print('-- Startup Script Complete --')

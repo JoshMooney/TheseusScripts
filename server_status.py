@@ -49,10 +49,14 @@ except Exception, err:
 
 
 log('AEGON', 'NetGear NAS @192.168.0.87', aegon_status)
-row_log()
 
 # Check JBlog access
 class JBlog(object):
+	def check_all(self):
+		self.local()
+		self.external()
+		self.domain()
+
 	def local(self):
 		local_result = False
 		try:
@@ -83,12 +87,113 @@ class JBlog(object):
 			domain_result = False
 		log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
 
-jblog_check = JBlog()
+	def git_status(self):
+		print "Checking Git Status of JBlog"
+		theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
+		os.chdir(theseus_jblog_dir)
+		subprocess.check_output("git fetch", shell=True)
+		status = subprocess.check_output("git status", shell=True)
+		git_msg = 'JBlog is '+ colored('behind', 'red') +' by '
+		if ("up-to-date" in status):
+			git_msg = 'JBlog is branch origin/master ' + colored('up-to-date', 'green')
+			print (git_msg)
+		else:
+			start = status.find('by', 0, len(status))
+			end = status.find(',', 0, len(status))
+			behind_msg = status[start: end]
+			print(git_msg + behind_msg)
 
-jblog_check.local()
-jblog_check.external()
-jblog_check.domain()
+
+
+row_log()
+jblog_check = JBlog()
+jblog_check.check_all()
 end_log()
+
+# Check API access
+class API(object):
+	def check_all(self):
+		self.local()
+		self.external()
+		self.domain()
+
+	def local(self):
+		local_result = False
+		try:
+			curl_local = requests.get('http://localhost:5000')
+			if (curl_local.status_code is 200):
+				local_result = True
+		except Exception, err:
+			local_result = False
+		log('API', 'Status via Localhost on port 5000', local_result)
+		
+	def external(self):
+		extern_result = False
+		try:
+			curl_extern = requests.get('http://46.7.248.23:80/rest')
+			if (curl_extern.status_code is 200):
+				extern_result = True
+		except Exception, err:
+			extern_result = False
+		log('API', 'Status via External IP on port 80', extern_result)
+
+	def domain(self):	
+		domain_result = False
+		try:
+			curl_domain = requests.get('http://www.Theseus.tk/rest')
+			if (curl_domain.status_code is 200):
+				domain_result = True
+		except Exception, err:
+			domain_result = False
+		log('API', 'Status via Domain name Theseus.tk/rest', domain_result)
+
+row_log()
+api_check = API()
+api_check.check_all()
+end_log()
+
+# Check Film_Calendar access
+class Film_Calendar(object):
+	def check_all(self):
+		self.local()
+		self.external()
+		self.domain()
+
+	def local(self):
+		local_result = False
+		try:
+			curl_local = requests.get('http://localhost:80/film-ui')
+			if (curl_local.status_code is 200):
+				local_result = True
+		except Exception, err:
+			local_result = False
+		log('Film', 'Status via Localhost on port 80', local_result)
+		
+	def external(self):
+		extern_result = False
+		try:
+			curl_extern = requests.get('http://46.7.248.23:80/film-ui')
+			if (curl_extern.status_code is 200):
+				extern_result = True
+		except Exception, err:
+			extern_result = False
+		log('Film', 'Status via External IP on port 80', extern_result)
+
+	def domain(self):	
+		domain_result = False
+		try:
+			curl_domain = requests.get('http://www.Theseus.tk/film-ui')
+			if (curl_domain.status_code is 200):
+				domain_result = True
+		except Exception, err:
+			domain_result = False
+		log('Film', 'Status via Domain name Theseus.tk/film-ui', domain_result)
+
+row_log()
+calendar_check = Film_Calendar()
+calendar_check.check_all()
+end_log()
+
 
 # Navigate to The correct directory
 theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
@@ -97,17 +202,8 @@ os.chdir(theseus_jblog_dir)
 # Check Git Status
 print ('')
 print('-- Git Status --')
-subprocess.check_output("git fetch", shell=True)
-status = subprocess.check_output("git status", shell=True)
-git_msg = 'JBlog is '+ colored('behind', 'red') +' by '
-if ("up-to-date" in status):
-	git_msg = 'JBlog is branch origin/master ' + colored('up-to-date', 'green')
-	print (git_msg)
-else:
-	start = status.find('by', 0, len(status))
-	end = status.find(',', 0, len(status))
-	behind_msg = status[start: end]
-	print(git_msg + behind_msg)
+
+jblog_check.git_status()
 	
 # Get server uptime
 print ('')
