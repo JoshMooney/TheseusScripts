@@ -108,7 +108,6 @@ class JBlog(object):
 row_log()
 jblog_check = JBlog()
 jblog_check.check_all()
-end_log()
 
 # Check API access
 class API(object):
@@ -150,7 +149,6 @@ class API(object):
 row_log()
 api_check = API()
 api_check.check_all()
-end_log()
 
 # Check Film_Calendar access
 class Film_Calendar(object):
