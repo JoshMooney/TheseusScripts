@@ -13,10 +13,15 @@ os.chdir(theseus_jblog_dir)
 print('Starting JBlog')
 status = subprocess.check_output("screen -d -m bundle exec jekyll serve", shell=True) 
 
+# start api
+
+# start film-calender-ui
+
 # Run Status script
 theseus_scripts_dir = '/home/barry/Scripts/TheseusScripts'
 os.chdir(theseus_scripts_dir)
 print('Checking Status \n\n')
 status = subprocess.check_output("python server_status.py", shell=True) 
+
 
 print('-- Startup Script Complete --')
