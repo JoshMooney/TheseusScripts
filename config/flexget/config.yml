@@ -1,0 +1,98 @@
+##----------------------------------------------------------------------------------------
+#
+#     name: Fleget Config file
+#     auther: Josh
+#     station: Apophis
+#     creation-date: 04/11/2017
+#
+#     This is the configuration file for flexget, going to start developing this file on
+#     the brand new Apophis aka. Lenovo laptop. The hope is to put all my tv shows here 
+#     then move it over to Theseues for production use, will also need to write a movement 
+#     scirpt for copying old files over to Aegon.
+#
+#
+#
+##----------------------------------------------------------------------------------------
+
+
+
+tasks:
+  # Mr Robot 
+  mr_robot:
+    rss: http://showrss.info/show/273.rss
+    series:
+      - Mr. Robot
+    download: ~/Videos/Torrents
+    regexp:
+      reject:
+        - 1x
+        - 2x
+        - 3x01
+        - 3x02
+        - 3x03
+
+  # DC's Arrow
+  arrow:
+    rss: http://showrss.info/show/117.rss
+    series:
+      - Arrow
+    download: ~/Videos/Torrents
+    regexp:
+      reject:
+        - 1x
+        - 2x
+        - 3x
+        - 4x
+        - 5x
+
+  # DC's Flash
+  flash:
+    rss: http://showrss.info/show/115.rss
+    series:
+      - The Flash
+    download: ~/Videos/Torrents
+    regexp:
+      reject:
+        - 1x
+        - 2x
+        - 3x
+
+  # DC's Supergirl
+  supergirl:
+    rss: http://showrss.info/show/140.rss
+    series:
+      - Supergirl
+    download: ~/Videos/Torrents
+    regexp:
+      reject:
+        - 1x
+        - 2x 
+
+  # DC's Legends of Tomorrow
+  lot:
+    rss: http://showrss.info/show/448.rss
+    series:
+      - 1x
+      - 2x 
+    download: ~/Videos/Torrents
+    regexp:
+      reject:
+        - 1x
+        - 2x 
+
+  # South Park
+  south_park:
+    rss: http://showrss.info/show/83.rss
+    series:
+      - South Park
+    download: ~/Videos/Torrents
+    require_field:
+      - 21x
+    regexp:
+      reject:
+        - x01
+        - x02
+        - x03
+        - x04
+        - x05
+        - x06 
