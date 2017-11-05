@@ -103,8 +103,6 @@ class JBlog(object):
 			behind_msg = status[start: end]
 			print(git_msg + behind_msg)
 
-
-
 row_log()
 jblog_check = JBlog()
 jblog_check.check_all()
