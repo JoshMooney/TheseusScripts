@@ -14,6 +14,10 @@ print('Starting JBlog')
 status = subprocess.check_output("screen -d -m bundle exec jekyll serve", shell=True) 
 
 # start api
+theseus_api_dir = '/home/barry/reverse_proxy/Theseus-API'
+os.chdir(theseus_api_dir)
+print('Starting Theseus-API')
+status = subprocess.check_output("screen -d -m python rest_api.py", shell=True) 
 
 # start film-calender-ui
 
