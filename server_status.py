@@ -215,7 +215,7 @@ except Exception, err:
 	print err
 	print "Error getting uptime."
 	
-	
+print("")	
 
 
 
