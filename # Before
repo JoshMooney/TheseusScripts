@@ -1,0 +1,63 @@
+# Before
+"latestStatus": {
+      "episodeTitle": "The Junior Assistant",
+      "corrupted_images": [],
+      "incorrectly_sized_images": [],
+      "title": "The Electric Company",
+      "http_response_api": 200,
+      "missing_metadata": [],
+      "missing_images": [
+        "https://api.cld.dtvce.com/catalog/image/imageserver/v1/service/movie/EP011072390065/series-poster/640/480",
+        "https://api.cld.dtvce.com/catalog/image/imageserver/v1/service/movie/EP011072390065/series-poster/640/360"
+      ],
+
+# After
+{
+  "latestStatus": {
+    "clientStatus": [
+      {
+        "client_id": "XXX", 
+        "http_response_authz": YYY,
+        "authz_responseCode": "NNNN",
+        "X-ATT-TransactionId_authz": "WWW"
+        "missing_stream": true,
+        "stream_url": "http://"
+      },
+      {
+        "client_id": "XXX", 
+        "http_response_authz": YYY,
+        "authz_responseCode": "NNNN",
+        "X-ATT-TransactionId_authz": "WWW"
+        "missing_stream": true,
+        "stream_url": "http://"
+      },
+      {
+        "client_id": "XXX", 
+        "http_response_authz": YYY,
+        "authz_responseCode": "NNNN",
+        "X-ATT-TransactionId_authz": "WWW"
+        "missing_stream": true,
+        "stream_url": "http://"
+      }
+    ],
+    // Legacy ---v
+    "http_response_authz": YYY
+  }
+}
+
+"latestStatus": {
+    "clientStatus": [
+      {
+        "X-ATT-TransactionId_authz" : "authz_id_0",
+        "X-ATT-TransactionId_api" : "api_id_0"
+      },
+      {
+        "X-ATT-TransactionId_authz" : "authz_id_1",
+        "X-ATT-TransactionId_api" : "api_id_1"
+      },
+      {
+        "X-ATT-TransactionId_authz" : "authz_id_2",
+        "X-ATT-TransactionId_api" : "api_id_2"
+      }
+    ]
+}

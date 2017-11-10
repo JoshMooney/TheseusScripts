@@ -6,7 +6,7 @@ import pygame
 import time
 
 
-tts = gTTS(text='Hello World, nice to finally see you', lang='en')
+tts = gTTS(text='Hello Joosh, nice to finally see you', lang='en')
 filename = "hello.mp3"
 
 def save_and_play():
