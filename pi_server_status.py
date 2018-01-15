@@ -19,6 +19,8 @@ def log(ser, msg, stat):
 		stat_msg = 'active'
 	print template.format(ser, msg, colored(stat_msg, stat_col))
 
+_external_ip = "80.111.5.9"
+
 start_log()
 template = "| {0:18} | {1:52} | {2:18} |"
 print template.format("SERVICE", "MESSAGE", "STATUS")
@@ -72,7 +74,7 @@ class JBlog(object):
 	def external(self):
 		extern_result = False
 		try:
-			curl_extern = requests.get('http://46.7.248.23:80/jblog')
+			curl_extern = requests.get('http://'+ _external_ip +':80/jblog')
 			if (curl_extern.status_code is 200):
 				extern_result = True
 		except Exception, err:
@@ -91,7 +93,7 @@ class JBlog(object):
 
 	def git_status(self):
 		print "Checking Git Status of JBlog"
-		theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
+		theseus_jblog_dir = '/home/pi/Project/JBlog'
 		os.chdir(theseus_jblog_dir)
 		subprocess.check_output("git fetch", shell=True)
 		status = subprocess.check_output("git status", shell=True)
@@ -129,7 +131,7 @@ class API(object):
 	def external(self):
 		extern_result = False
 		try:
-			curl_extern = requests.get('http://46.7.248.23:80/rest')
+			curl_extern = requests.get('http://'+ _external_ip +':80/rest')
 			if (curl_extern.status_code is 200):
 				extern_result = True
 		except Exception, err:
@@ -170,7 +172,7 @@ class Film_Calendar(object):
 	def external(self):
 		extern_result = False
 		try:
-			curl_extern = requests.get('http://46.7.248.23:80/film-ui')
+			curl_extern = requests.get('http://'+ _external_ip +':80/film-ui')
 			if (curl_extern.status_code is 200):
 				extern_result = True
 		except Exception, err:
@@ -194,7 +196,7 @@ end_log()
 
 
 # Navigate to The correct directory
-theseus_jblog_dir = '/home/pi/Projects/JBlog'
+theseus_jblog_dir = '/home/pi/Project/JBlog'
 os.chdir(theseus_jblog_dir)
 
 # Check Git Status
