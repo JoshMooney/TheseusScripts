@@ -2,6 +2,8 @@ import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
  
+theseus_addr = "server.theseus@gmail.com"
+
 fromaddr = "jmooney@digisoft.tv"
 toaddr = "joshmoo2012@gmail.com"
 msg = MIMEMultipart()
