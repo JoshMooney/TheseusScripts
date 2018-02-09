@@ -192,8 +192,53 @@ class Film_Calendar(object):
 row_log()
 calendar_check = Film_Calendar()
 calendar_check.check_all()
-end_log()
 
+class Resume(object):
+    def check_all(self):
+        self.local()
+        self.external()
+
+    def local(self):
+        local_result = False
+        try:
+            curl_local = requests.get('http://localhost:80/resume')
+            if (curl_local.status_code is 200):
+                local_result = True
+        except Exception as err:
+            local_result = False
+        log('Resume', 'Status via Localhost on port 5000', local_result)
+
+    def external(self):
+        extern_result = False
+        try:
+            curl_extern = requests.get('http://' + _external_ip + ':80/resume')
+            if (curl_extern.status_code is 200):
+                extern_result = True
+        except Exception as err:
+            extern_result = False
+        log('Resume', 'Status via External IP on port 80', extern_result)
+
+    def git_status(self):
+        print
+        "Checking Git Status of JBlog"
+        theseus_jblog_dir = '/home/pi/Project/PieseusResume'
+        os.chdir(theseus_jblog_dir)
+        subprocess.check_output("git fetch", shell=True)
+        status = subprocess.check_output("git status", shell=True)
+        git_msg = 'Resume is ' + colored('behind', 'red') + ' by '
+        if ("up-to-date" in status):
+            git_msg = 'Resume is branch origin/master ' + colored('up-to-date', 'green')
+            print(git_msg)
+        else:
+            start = status.find('by', 0, len(status))
+            end = status.find(',', 0, len(status))
+            behind_msg = status[start: end]
+            print(git_msg + behind_msg)
+
+row_log()
+resume_check = Resume()
+resume_check.check_all()
+end_log()
 
 # Navigate to The correct directory
 theseus_jblog_dir = '/home/pi/Project/JBlog'
@@ -204,6 +249,7 @@ print ('')
 print('-- Git Status --')
 
 jblog_check.git_status()
+resume_check.git_status()
 	
 # Get server uptime
 print ('')
