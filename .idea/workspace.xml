@@ -23,8 +23,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d2a6597b-c3dc-47c6-8c60-f88ef5b7fbfd" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/pi_server_startup.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pi_server_status.py" afterPath="$PROJECT_DIR$/pi_server_status.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,8 +50,8 @@
       <file leaf-file-name="pi_server_status.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pi_server_status.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="342">
-              <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
+            <state relative-caret-position="361">
+              <caret line="256" column="57" lean-forward="false" selection-start-line="256" selection-start-column="57" selection-end-line="256" selection-end-column="57" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -404,8 +402,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pi_server_status.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="342">
-          <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
+        <state relative-caret-position="361">
+          <caret line="256" column="57" lean-forward="false" selection-start-line="256" selection-start-column="57" selection-end-line="256" selection-end-column="57" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>

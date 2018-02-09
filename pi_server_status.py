@@ -244,7 +244,7 @@ class Resume(object):
                 local_result = True
         except Exception as err:
             local_result = False
-        log('Resume', 'Status via Localhost on port 5000', local_result)
+        log('Resume', 'Status of /resume endpoint using a Local IP', local_result)
 
     def external(self):
         extern_result = False
@@ -254,7 +254,7 @@ class Resume(object):
                 extern_result = True
         except Exception as err:
             extern_result = False
-        log('Resume', 'Status via External IP on port 80', extern_result)
+        log('Resume', 'Status of /resume endpoint using a External IP', extern_result)
 
     def git_status(self):
         print
