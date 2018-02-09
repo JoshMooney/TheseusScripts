@@ -41,6 +41,41 @@ check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
 check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
 check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
 
+def _check_teamviewer():
+    log_msg = {'name': 'TeamViewer', 'msg': 'Status of TeamViewer Host'}
+    status = subprocess.check_output("ps aux | grep teamviewer", shell=True)
+    is_running = False
+    if('/opt/teamviewer/tv_bin/TeamViewer'in status):
+        is_running = True
+    log(log_msg['name'], log_msg['msg'], is_running)
+    row_log()
+        
+_check_teamviewer()
+
+def _check_vnc_server():
+    log_msg = {'name': 'VNC Server', 'msg': 'Status of VNC Server'}
+    status = subprocess.check_output("ps -e | grep vnc", shell=True)
+    is_running = False
+    if('Xtightvnc'in status):
+        is_running = True
+    log(log_msg['name'], log_msg['msg'], is_running)
+    row_log()
+        
+_check_vnc_server()
+
+def _check_mounted_drives():
+    drives = [{"name": "ShortTerm", "path": "/media/pi/ShortTerm"},
+              {"name": "Aegon",     "path": "/mnt/Aegon"}]
+    
+    for d in drives:
+        is_mounted = False
+        if os.path.ismount(d['path']):
+            is_mounted = True
+        log(d['name'], d['name'] + ' is mounted @' + d['path'], is_mounted)
+    row_log()
+            
+_check_mounted_drives() 
+
 def _check_aegon_status():
 	aegon_status = False
 	try:
@@ -218,8 +253,8 @@ try:
 except Exception, err:
 	print err
 	print "Error getting uptime."
-	
-print("")	
-
-
-
+	 
+print("")
+     
+   
+    
