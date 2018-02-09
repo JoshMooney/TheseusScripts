@@ -54,11 +54,14 @@ _check_teamviewer()
 
 def _check_vnc_server():
     log_msg = {'name': 'VNC Server', 'msg': 'Status of VNC Server'}
-    status = subprocess.check_output("ps -e | grep vnc", shell=True)
     is_running = False
-    if('Xtightvnc'in status):
-        is_running = True
-    log(log_msg['name'], log_msg['msg'], is_running)
+    try:
+        status = subprocess.check_output("ps -e | grep vnc", shell=True)
+        if('Xtightvnc'in status):
+            is_running = True
+        log(log_msg['name'], log_msg['msg'], is_running)
+    except Exception as err:
+        log(log_msg['name'], log_msg['msg'], is_running)
     row_log()
         
 _check_vnc_server()
