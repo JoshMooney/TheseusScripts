@@ -19,6 +19,8 @@ def log(ser, msg, stat):
 		stat_msg = 'active'
 	print template.format(ser, msg, colored(stat_msg, stat_col))
 
+_external_ip = "80.111.5.9"
+
 start_log()
 template = "| {0:18} | {1:52} | {2:18} |"
 print template.format("SERVICE", "MESSAGE", "STATUS")
@@ -38,6 +40,44 @@ def check_service(ser_name, ser_data):
 check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
 check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
 check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
+
+def _check_teamviewer():
+    log_msg = {'name': 'TeamViewer', 'msg': 'Status of TeamViewer Host'}
+    status = subprocess.check_output("ps aux | grep teamviewer", shell=True)
+    is_running = False
+    if('/opt/teamviewer/tv_bin/TeamViewer'in status):
+        is_running = True
+    log(log_msg['name'], log_msg['msg'], is_running)
+    row_log()
+        
+_check_teamviewer()
+
+def _check_vnc_server():
+    log_msg = {'name': 'VNC Server', 'msg': 'Status of VNC Server'}
+    is_running = False
+    try:
+        status = subprocess.check_output("ps -e | grep vnc", shell=True)
+        if('Xtightvnc'in status):
+            is_running = True
+        log(log_msg['name'], log_msg['msg'], is_running)
+    except Exception as err:
+        log(log_msg['name'], log_msg['msg'], is_running)
+    row_log()
+        
+_check_vnc_server()
+
+def _check_mounted_drives():
+    drives = [{"name": "ShortTerm", "path": "/media/pi/ShortTerm"},
+              {"name": "Aegon",     "path": "/mnt/Aegon"}]
+    
+    for d in drives:
+        is_mounted = False
+        if os.path.ismount(d['path']):
+            is_mounted = True
+        log(d['name'], d['name'] + ' is mounted @' + d['path'], is_mounted)
+    row_log()
+            
+_check_mounted_drives() 
 
 def _check_aegon_status():
 	aegon_status = False
@@ -72,7 +112,7 @@ class JBlog(object):
 	def external(self):
 		extern_result = False
 		try:
-			curl_extern = requests.get('http://46.7.248.23:80/jblog')
+			curl_extern = requests.get('http://'+ _external_ip +':80/jblog')
 			if (curl_extern.status_code is 200):
 				extern_result = True
 		except Exception, err:
@@ -91,7 +131,7 @@ class JBlog(object):
 
 	def git_status(self):
 		print "Checking Git Status of JBlog"
-		theseus_jblog_dir = '/home/barry/reverse_proxy/jblog'
+		theseus_jblog_dir = '/home/pi/Project/JBlog'
 		os.chdir(theseus_jblog_dir)
 		subprocess.check_output("git fetch", shell=True)
 		status = subprocess.check_output("git status", shell=True)
@@ -129,7 +169,7 @@ class API(object):
 	def external(self):
 		extern_result = False
 		try:
-			curl_extern = requests.get('http://46.7.248.23:80/rest')
+			curl_extern = requests.get('http://'+ _external_ip +':80/rest')
 			if (curl_extern.status_code is 200):
 				extern_result = True
 		except Exception, err:
@@ -170,7 +210,7 @@ class Film_Calendar(object):
 	def external(self):
 		extern_result = False
 		try:
-			curl_extern = requests.get('http://46.7.248.23:80/film-ui')
+			curl_extern = requests.get('http://'+ _external_ip +':80/film-ui')
 			if (curl_extern.status_code is 200):
 				extern_result = True
 		except Exception, err:
@@ -190,11 +230,56 @@ class Film_Calendar(object):
 row_log()
 calendar_check = Film_Calendar()
 calendar_check.check_all()
+
+class Resume(object):
+    def check_all(self):
+        self.local()
+        self.external()
+
+    def local(self):
+        local_result = False
+        try:
+            curl_local = requests.get('http://localhost:80/resume')
+            if (curl_local.status_code is 200):
+                local_result = True
+        except Exception as err:
+            local_result = False
+        log('Resume', 'Status of /resume endpoint using a Local IP', local_result)
+
+    def external(self):
+        extern_result = False
+        try:
+            curl_extern = requests.get('http://' + _external_ip + ':80/resume')
+            if (curl_extern.status_code is 200):
+                extern_result = True
+        except Exception as err:
+            extern_result = False
+        log('Resume', 'Status of /resume endpoint using a External IP', extern_result)
+
+    def git_status(self):
+        print
+        "Checking Git Status of JBlog"
+        theseus_jblog_dir = '/home/pi/Project/PieseusResume'
+        os.chdir(theseus_jblog_dir)
+        subprocess.check_output("git fetch", shell=True)
+        status = subprocess.check_output("git status", shell=True)
+        git_msg = 'Resume is ' + colored('behind', 'red') + ' by '
+        if ("up-to-date" in status):
+            git_msg = 'Resume is branch origin/master ' + colored('up-to-date', 'green')
+            print(git_msg)
+        else:
+            start = status.find('by', 0, len(status))
+            end = status.find(',', 0, len(status))
+            behind_msg = status[start: end]
+            print(git_msg + behind_msg)
+
+row_log()
+resume_check = Resume()
+resume_check.check_all()
 end_log()
 
-
 # Navigate to The correct directory
-theseus_jblog_dir = '/home/pi/Projects/JBlog'
+theseus_jblog_dir = '/home/pi/Project/JBlog'
 os.chdir(theseus_jblog_dir)
 
 # Check Git Status
@@ -202,6 +287,7 @@ print ('')
 print('-- Git Status --')
 
 jblog_check.git_status()
+resume_check.git_status()
 	
 # Get server uptime
 print ('')
@@ -216,8 +302,8 @@ try:
 except Exception, err:
 	print err
 	print "Error getting uptime."
-	
-print("")	
-
-
-
+	 
+print("")
+     
+   
+    
