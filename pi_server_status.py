@@ -130,7 +130,6 @@ class JBlog(object):
 		log('JBlog', 'Status via Domain name Theseus.tk/JBlog', domain_result)
 
 	def git_status(self):
-		print "Checking Git Status of JBlog"
 		theseus_jblog_dir = '/home/pi/Project/JBlog'
 		os.chdir(theseus_jblog_dir)
 		subprocess.check_output("git fetch", shell=True)
@@ -257,8 +256,6 @@ class Resume(object):
         log('Resume', 'Status of /resume endpoint using a External IP', extern_result)
 
     def git_status(self):
-        print
-        "Checking Git Status of JBlog"
         theseus_jblog_dir = '/home/pi/Project/PieseusResume'
         os.chdir(theseus_jblog_dir)
         subprocess.check_output("git fetch", shell=True)
