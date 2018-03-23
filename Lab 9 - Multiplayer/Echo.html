@@ -1,0 +1,176 @@
+<html>
+
+<script>
+//var url = "ws://149.153.102.19:8080/test";
+var url = "ws://80.111.5.9:4040/test";
+var ws = new WebSocket(url);
+var game;
+
+var player = { }
+player.request = 'join'
+player.Pos = { "X" : -16, "Y" : -16}
+player.ID = 0;
+
+var otherPlayer = { }
+otherPlayer.Pos = { "X" : -16, "Y" : -16}
+otherPlayer.ID = 0;
+
+var state;
+
+ws.onopen = function()
+{
+	game = new Game();
+
+	game.initCanvas();
+	//game.initTouch();
+
+	var message = JSON.stringify(player);
+	ws.send(message);
+	document.addEventListener("mousedown", function(e){game.Clicked(e);});
+}
+
+function Game()
+{
+	this.screenwidth = window.innerWidth;
+	this.screenheight = window.innerHeight;
+ 	this.canvas;
+ 	this.ctx;
+ 	state = "NULL";
+
+ 	//Load and create an image
+	this.p1 = new Image();
+	this.p1.src = "p1.png";
+	this.p1Location = "p1.png";
+
+	this.p2 = new Image();
+	this.p2.src = "p2.png";
+	this.p2Location = "p1.png";
+
+	this.playerTexture = new Image();
+	this.playerTexture.src = this.p1Location;
+	this.otherPlayerTexture = new Image();
+	this.otherPlayerTexture.src = this.p2Location;
+}
+
+
+Game.prototype.initCanvas = function()
+{
+	//create a canvas element
+	this.canvas = document.createElement('canvas');
+
+	//create a 2d context for drawing
+	this.ctx = this.canvas.getContext('2d');
+
+	//????
+	document.body.appendChild(this.canvas);
+
+	this.canvas.width = this.screenwidth;
+	this.canvas.height = this.screenheight;
+	this.ctx.strokeStyle = "#cccccc";
+	this.ctx.lineWidth = 5;
+	
+	
+	console.log("Canvas init");
+}
+
+Game.prototype.initTouch = function()
+{
+	//1. is this running in a touch capable environment?
+	touchable = 'createTouch' in document;
+	this.touches = [];
+	
+	//2. If it is touchable, add a listener
+	if(touchable) {
+		this.canvas.addEventListener( 'touchstart', onTouchStart, false );
+		this.canvas.addEventListener( 'touchmove', onTouchMove, false );
+		this.canvas.addEventListener( 'touchend', onTouchEnd, false );
+		window.onorientationchange = this.initCanvas;  
+		window.onresize = this.initCanvas;  
+		console.log("Touch interface");
+	}
+	
+	else {
+		this.canvas.addEventListener( 'mousedown', onMouseDown, false);
+		console.log("Non-touch interface");
+		window.alert("No touch interface detected!");
+	
+	}
+}
+
+Game.prototype.Clicked = function(e)
+{
+	if(state == "STARTING_GAME")
+	{
+		e.preventDefault();
+		console.log("You Clicked");
+		console.log("Touch: X - " + e.clientX + ", Y - " + e.clientY);
+		console.log("");
+		player.request = "Touch";
+		player.Pos = {"X": e.clientX, "Y": e.clientY};
+		var message = JSON.stringify(player);
+		ws.send(message);
+		game.draw();
+	}
+	else
+	{
+		e.preventDefault();
+		console.log("Please Wait on Other Players");
+	}
+}
+
+ws.onmessage= function(event)
+{
+	this.msg = JSON.parse(event.data);
+	if(this.msg["type"] == "Joined")
+	{
+		state = this.msg["data"];
+		player.ID = this.msg["ID"];
+		console.log(player.ID);
+		if(player.ID == 1)
+		{
+			//this.playerTexture = new Image();
+			this.playerTexture = this.p1;
+			//this.otherPlayerTexture = new Image();
+			this.otherPlayerTexture = this.p2;
+		}
+		if(player.ID == 2)
+		{
+			//this.playerTexture = new Image();
+			this.playerTexture = this.p2;
+			//this.otherPlayerTexture = new Image();
+			this.otherPlayerTexture = this.p1;
+		}
+		console.log(this.msg["data"]);
+	}
+	if(this.msg["type"] == "Join UnsuccessFul - Session Full")
+	{
+		console.log(this.msg["type"]);
+	}
+	if(this.msg["type"] == "Touch")
+	{
+		console.log("Touch Recieved");
+		console.log("The Person at IP: " + this.msg["IP"]);
+		console.log("Touch: X - " + this.msg["Pos"]["X"] + ", Y - " + this.msg["Pos"]["Y"]);
+		console.log("");
+		otherPlayer.Pos["X"] = this.msg["Pos"]["X"];
+		otherPlayer.Pos["Y"] = this.msg["Pos"]["Y"];
+		game.draw();
+	}
+}
+
+ws.UpdateState = function()
+{
+
+
+}
+
+Game.prototype.draw = function()
+{
+	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	this.ctx.drawImage(this.p1, player.Pos["X"] - 16, player.Pos["Y"] - 16);
+	this.ctx.drawImage(this.p2, otherPlayer.Pos["X"]- 16, otherPlayer.Pos["Y"] - 16);
+}
+
+</script>
+
+</html>
