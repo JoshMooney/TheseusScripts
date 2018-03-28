@@ -2,74 +2,55 @@
 "   Created by: Josh on 27/03/18
 """
 
-from xboxapi import Client
 import urllib
+import os
 import requests
 
-client = Client(api_key="3215f62d3a4226efbf28be18ac9e3b33549e9865")
 
-# g_Josh = client.gamer('Joshmoo2012')
-# presence = g_Josh.get('presence')
-# xuid = presence['xuid']
-#
-# screenshots = g_Josh.get('screenshots')
+img_path = '/home/josh'
+xbox_path = 'XboxApi/imgs'
 
-mock_screen_shot = [
-                  {
-                        "screenshotId": "9c8b5bd0-ff8b-4d08-9b46-9a68763cd558",
-                        "resolutionHeight": 2160,
-                        "resolutionWidth": 3840,
-                        "state": "Published",
-                        "datePublished": "2018-03-12T23:13:00.0531057Z",
-                        "dateTaken": "2018-03-12 23:12:38",
-                        "lastModified": "2018-03-12T23:12:38Z",
-                        "userCaption": "",
-                        "type": "UserGenerated",
-                        "scid": "d1adc8aa-0a31-4407-90f2-7e9b54b0347c",
-                        "titleId": 927474846,
-                        "rating": 0,
-                        "ratingCount": 0,
-                        "views": 0,
-                        "titleData": "",
-                        "systemProperties": "1504bffb-dc80-4bc9-9459-4d5795a12ec20;",
-                        "savedByUser": True,
-                        "achievementId": "",
-                        "greatestMomentId": None,
-                        "thumbnails": [{
-                            "uri": "https:\/\/screenshotscontent-t3002.xboxlive.com\/xuid-2533274851696933-public\/9c8b5bd0-ff8b-4d08-9b46-9a68763cd558_Thumbnail.PNG",
-                            "fileSize": 0,
-                            "thumbnailType": "Small"
-                        }, {
-                            "uri": "https:\/\/screenshotscontent-t3002.xboxlive.com\/xuid-2533274851696933-public\/9c8b5bd0-ff8b-4d08-9b46-9a68763cd558_Thumbnail.PNG",
-                            "fileSize": 0,
-                            "thumbnailType": "Large"
-                        }],
-                        "screenshotUris": [{
-                            "uri": "https:\/\/screenshotscontent-d3002.xboxlive.com\/xuid-2533274851696933-private\/9c8b5bd0-ff8b-4d08-9b46-9a68763cd558.PNG?sv=2015-12-11&sr=b&si=DefaultAccess&sig=9pAQhAPT3O3SA78DitaCwTipkcpjtitxNyqzwELhKO0%3D",
-                            "fileSize": 6791924,
-                            "uriType": "Download",
-                            "expiration": "2018-03-27 17:43:59"
-                        }],
-                        "xuid": 2533274851696933,
-                        "screenshotName": "",
-                        "titleName": "Firewatch",
-                        "screenshotLocale": "en-IE",
-                        "screenshotContentAttributes": "None",
-                        "deviceType": "Scorpio",
-                        "screenshotDetails": "https:\/\/xboxapi.com\/v2\/2533274851696933\/screenshot-details\/d1adc8aa-0a31-4407-90f2-7e9b54b0347c\/9c8b5bd0-ff8b-4d08-9b46-9a68763cd558"
-                    }]
+headers = { 'X-AUTH': '176c920e9db3e9305fec3b2303ecb5ca525e3924', }
+xbox_api_url = 'https://xboxapi.com/v2'
+response = requests.get(xbox_api_url + '/accountXuid', headers=headers)
+res_json = response.json()
 
-for image in mock_screen_shot:
-    name = image['titleName'] + "_" + image['deviceType'] + "_" + image['dateTaken'] + '.png'
-    for i in image['screenshotUris']:
-        with open('pic1.jpg', 'wb') as handle:
-            response = requests.get(i['uri'], stream=True)
+xuid = res_json['xuid']
+url = xbox_api_url +'/'+ str(xuid) +'/'+ 'screenshots'
+response = requests.get(url, headers=headers)
+screenshots = response.json()
 
-            if not response.ok:
-                print
-                response
+default_path = os.getcwd()
+path = os.path.join(img_path, xbox_path)
 
-            for block in response.iter_content(1024):
-                if not block:
-                    break
-                handle.write(block)
+if not os.path.exists(path):
+    os.makedirs(path)
+
+os.chdir(path)
+
+image_count, download_count = 0, 0
+for image in screenshots:
+    image_count += 0
+    try:
+        name = image['titleName'] + "_" + image['deviceType'] + "_" + image['dateTaken'] + '.png'
+        if not os.path.isfile(name):
+            for i in image['screenshotUris']:
+                url = i['uri'].replace('\\', '')
+                urllib.request.urlretrieve(url, name)
+                download_count += 1
+    except Exception as err:
+        print(err)
+
+os.chdir(default_path)
+print("-- RESULTS -- \n"
+      "Image directory: {{DIRECTORY}} \n"
+      "* {{TOTAL}} images processed \n"
+      "* {{DOWNLOADED}} new images \n"
+      "* {{DIFF}} images skipped \n")
+
+
+
+
+
+
+
