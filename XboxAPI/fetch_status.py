@@ -1,6 +1,6 @@
 from xboxapi import Client
 
-client = Client(api_key="1eb21143c5fe1b7be233c69116771538bebd847d")
+client = Client(api_key="ff54cea91a150f202ff7951cad47ff5b027f46b9")
 
 #presence = gamer.get('presence')
 #profile = gamer.get('profile')
@@ -29,8 +29,9 @@ def _am_i_behind():
     _print_activity(g_Jack)
     
     _diff = _get_gamerscore(g_Josh) - _get_gamerscore(g_Jack)
-    if _diff > 0:
-        return True
-    return False
+    return _diff > 0, _diff
 
-_am_i_behind()
+result = _am_i_behind()
+
+print("You are %s behind" % ("not" if result[0] else ""))
+print("There is %s Gamerscore between you and Jack" % (result[1]))
