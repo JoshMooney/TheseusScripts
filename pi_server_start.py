@@ -101,8 +101,8 @@ def _run_vncserver():
         status = subprocess.check_output("vncserver", shell=True) 
     except Exception, e:
         print('Error running VNC Server: ')
-	print('Finish VNC Server start')
-	print('')
+    print('Finish VNC Server start')
+    print('')
 
 execute()
 
