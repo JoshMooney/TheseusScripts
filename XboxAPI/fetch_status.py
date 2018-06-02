@@ -1,36 +1,18 @@
-from xboxapi import Client
-
-client = Client(api_key="1eb21143c5fe1b7be233c69116771538bebd847d")
-
-#presence = gamer.get('presence')
-#profile = gamer.get('profile')
-
+import requests
+from config import XBOX_API_CONFIG, get_session
 
 def _am_i_behind():
-    def _get_gamerscore(gamer):
-        profile = gamer.get('profile') 
-        return profile['Gamerscore']
+    def _get_gamerscore(xuid):
+        return session.get(XBOX_API_CONFIG._API_URL +'/'+ str(xuid) +'/'+ 'profile').json()['Gamerscore']
 
-    def _print_activity(gamer):
-        presence = gamer.get('presence')
-        log = dict()
-        log['status'] = presence.get('status', '')
-        log['game'] = presence.get('titles', {})[1].get('name', '')
-        print(log)
-
-    g_Josh = client.gamer('Joshmoo2012')
-    presence = g_Josh.get('presence')
-    log = dict()
-    log['status'] = presence.get('status', '')
-    log['game'] = presence.get('titles', {})[1].get('name', '')
-    print(log)
-    g_Jack = client.gamer('xXxSausageShark')
+    session = get_session()
+    jos_xuid = session.get(XBOX_API_CONFIG._API_URL + '/xuid/' + XBOX_API_CONFIG._JOSH_GAMERTAG).json()
+    jac_xuid = session.get(XBOX_API_CONFIG._API_URL + '/xuid/' + XBOX_API_CONFIG._JACK_GAMERTAG).json()
     
-    _print_activity(g_Jack)
-    
-    _diff = _get_gamerscore(g_Josh) - _get_gamerscore(g_Jack)
-    if _diff > 0:
-        return True
-    return False
+    _diff = _get_gamerscore(jos_xuid) - _get_gamerscore(jac_xuid)
+    return _diff > 0, _diff
 
-_am_i_behind()
+result = _am_i_behind()
+
+print("You are %s behind" % ("not" if result[0] else ""))
+print("There is %s Gamerscore between you and Jack" % (result[1]))
