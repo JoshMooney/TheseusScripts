@@ -72,6 +72,14 @@ def _run_api():
     except Exception, e:
         print ('Error starting API: ', e)
     print('')
+
+def _run_minidlna():
+    print('Starting miniDLNA')
+    try:
+        status = subprocess.check_output("sudo service minidlna start", shell=True)
+    except Exception, e:
+        print ('Error starting miniDLNA: ', e)
+    print('')
     
 #todo: start film-calender-ui
 
@@ -94,7 +102,7 @@ def _run_vncserver():
     except Exception, e:
         print('Error running VNC Server: ')
 	print('Finish VNC Server start')
-	print('')        
+	print('')
 
 execute()
 

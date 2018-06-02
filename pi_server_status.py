@@ -40,6 +40,7 @@ def check_service(ser_name, ser_data):
 check_service('nginx', {'name': 'NGINX', 'msg': 'Status of nginx'})
 check_service('smbd', {'name': 'SAMBA', 'msg': 'Status of Samba server'})
 check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of transmission-daemon'})
+check_service('minidlna', {'name': 'MINIDLNA', 'msg': 'Status of miniDLNA server'})
 
 def _check_teamviewer():
     log_msg = {'name': 'TeamViewer', 'msg': 'Status of TeamViewer Host'}
