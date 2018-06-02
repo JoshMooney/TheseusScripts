@@ -4,7 +4,7 @@
         - shutil
 """
 
-import shutil import copyfile
+import shutil
 
 
 scripts = [
@@ -20,7 +20,7 @@ for script in scripts:
         print("Copying %s" % script['name'])
         src = "&s/%s" % script['src'], script['name']
         des = "&s/%s" % script['des'], script['name']
-        copyfile(src, des)
+        shutil.copyfile(src, des)
     except Exception as error:
         print("Failed to copy %s" % script.name)
 
