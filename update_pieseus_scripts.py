@@ -22,7 +22,7 @@ for script in scripts:
         des = "&s/%s" % script['des'], script['name']
         shutil.copyfile(src, des)
     except Exception as error:
-        print("Failed to copy %s" % script.name)
+        print("Failed to copy %s" % script['name'])
 
 
 
