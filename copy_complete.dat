@@ -1,1 +1,2 @@
-stats=successful:0,failed:0,skipped:8stats=successful:1,failed:0,skipped:8
+test_file.txtstats=successful:1,failed:0,skipped:1 
+

@@ -10,7 +10,7 @@ def already_exist(_dir):
     return False
 
 dirs = {
-    "src": {"Windows": "F:/", "Linux": "/mnt/ShortTerm/torrents"},
+    "src": {"Windows": "F:/test_dir", "Linux": "/mnt/ShortTerm/torrents"},
     "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
 }
 finished = []
@@ -43,29 +43,27 @@ for f in files:
             stats['skipped'] += 1
             continue
         print("Copying {} file {} of {}".format(f, file_count, len(files)))
-	try:
+        try:
             if os.path.isdir(src):
                 shutil.copytree(src, dst, False, None)
             else:
                 shutil.copyfile(src, dst)
-            print("Copied {} to {}".format(f, dirs['dst'][ver]))
-            copy_complete_file.write(f)
+            print("Copied {} to {} and was marked".format(f, dirs['dst'][ver]))
+            copy_complete_file.write(f"\n")
             stats['pass'] += 1
         except OSError as error:
             print("Error copying with shutil, attempting terminal")
             try:
                 subprocess.call(['cp', '-r', src, dst])
-                print("Copied {} to {} using terminal".format(f, dirs['dst'][ver]))
-                copy_complete_file.write(f)
+                print("Copied {} to {} using terminal and was marked".format(f, dirs['dst'][ver]))
+                copy_complete_file.write(f+"\n")
                 stats['pass'] += 1
             except Exception as error:
                 print("Error copying with terminal, giving up")
                 stats['fail'] += 1
-        print("")
     else:
         print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
         stats['skipped'] += 1
-    print("")
 
-print("** {} files copied, {} files failed and {} files skipped **.".format(stats['pass'], stats['fail'], stats['skipped']))
-copy_complete_file.write("stats=successful:{},failed:{},skipped:{}". format(stats['pass'], stats['fail'], stats['skipped']))
+print("** {} files copied, {} files failed and {} files skipped ** \n\n".format(stats['pass'], stats['fail'], stats['skipped']))
+copy_complete_file.write("stats=successful:{},failed:{},skipped:{} \n\n". format(stats['pass'], stats['fail'], stats['skipped']))
