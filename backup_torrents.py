@@ -9,61 +9,85 @@ def already_exist(_dir):
         return True
     return False
 
-dirs = {
-    "src": {"Windows": "F:/test_dir", "Linux": "/mnt/ShortTerm/torrents"},
-    "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
-}
-finished = []
-ver = platform.system()
-ignore_dirs = ["_incomplete", "In_Progress", "$RECYCLE.BIN"]
 
-files = [d for d in os.listdir(dirs['src'][ver])]
-files = filter(lambda x: x not in ignore_dirs, files)
-stats = {"pass": 0, "fail": 0, "skipped": 0}
-file_count = 0
+class BackupTorrents(object):
+    def __init__(self):
+        self.dirs = {
+            "src": {"Windows": "F:/test_dir", "Linux": "/mnt/ShortTerm/torrents"},
+            "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
+        }
+        self.finished = []
+        self.ver = platform.system()
+        self.ignore_dirs = ["_incomplete", "In_Progress", "$RECYCLE.BIN", "_whitelist"]
+        self.stats = {"pass": 0, "fail": 0, "skipped": 0, "deleted": 0}
+        self.files = self.get_files()
 
-copy_complete_file = open('copy_complete.dat', 'a+')
+    def get_files(self):
+        files = [d for d in os.listdir(self.dirs['src'][self.ver])]
+        return filter(lambda x: x not in self.ignore_dirs, files)
 
-for f in files:
-    file_count += 1
-    if os.path.isdir(dirs['dst'][ver]):
-        src = os.path.join(dirs['src'][ver], f)
-        dst = os.path.join(dirs['dst'][ver], f)
+    def delete_file(self, src):
+        try:
+            if already_exist(src):
+                if os.path.isdir(src):
+                    shutil.rmtree(src)
+                else:
+                    os.remove(src)
+                self.stat_log("deleted")
+                return True
+            print("    ?? File no longer exists in source directory ??")
+            return False
+        except Exception as error:
+            print("    There was an error deleting file")
+            return False
 
-        if already_exist(dst):
-            marked = False
-            for line in copy_complete_file.readlines():
-               if f in line:
-                  marked = True
-                  break
-            addon = ""
-            if marked:
-               addon = " and is marked for deletion"
-            print("The file {} already exists in the directory {}".format(f, dst) + addon)
-            stats['skipped'] += 1
-            continue
-        print("Copying {} file {} of {}".format(f, file_count, len(files)))
+    def copy_file(self, f, src, dst):
         try:
             if os.path.isdir(src):
                 shutil.copytree(src, dst, False, None)
             else:
                 shutil.copyfile(src, dst)
-            print("Copied {} to {} and was marked".format(f, dirs['dst'][ver]))
-            copy_complete_file.write(f+"\n")
-            stats['pass'] += 1
-        except OSError as error:
-            print("Error copying with shutil, attempting terminal")
-            try:
-                subprocess.call(['cp', '-r', src, dst])
-                print("Copied {} to {} using terminal and was marked".format(f, dirs['dst'][ver]))
-                copy_complete_file.write(f+"\n")
-                stats['pass'] += 1
-            except Exception as error:
-                print("Error copying with terminal, giving up")
-                stats['fail'] += 1
-    else:
-        print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
-        stats['skipped'] += 1
+            self.stat_log('pass')
+            return True
+        except Exception as error:
+            print("    Error copying file")
+            self.stat_log('fail')
+            return False
 
-print("** Processed {} files: {} files copied, {} files failed and {} files skipped ** \n\n".format(len(files), stats['pass'], stats['fail'], stats['skipped']))
-copy_complete_file.write("stats=successful:{},failed:{},skipped:{} \n\n". format(stats['pass'], stats['fail'], stats['skipped']))
+    def stat_log(self, type):
+        self.stats[type] += 1
+
+    def run_backup(self):
+        file_count = 0
+        print("** Starting Torrent Backup **")
+        for f in self.files:
+            file_count += 1
+            if os.path.isdir(self.dirs['dst'][self.ver]):
+                src = os.path.join(self.dirs['src'][self.ver], f)
+                dst = os.path.join(self.dirs['dst'][self.ver], f)
+
+                if already_exist(dst):
+                    print("    The file {} already exists in the directory {} skipping".format(f, dst))
+                    self.stat_log('skipped')
+                    result = True
+                else:
+                    print("    Copying {} file {} of {}".format(f, file_count, len(self.files)))
+                    result = self.copy_file(f, src, dst)
+                    print("    Successfully copied {} to {} and was marked".format(f, self.dirs['dst'][self.ver]))
+
+                if result:
+                    print("    Deleteing {}".format(f))
+                    self.delete_file(src)
+                    print("    Successfully deleted {}".format(f))
+                else:
+                    print("    File did not copy and was not deleted")
+            else:
+                print("    Destination directory {} was not accessible".format(self.dirs['dst'][self.ver]))
+                self.stat_log('skipped')
+        print("Processed {} files: \n    - {} files copied,\n    - {} files failed,\n    - {} files skipped,\n    - {} deleted files".format(len(self.files), self.stats['pass'], self.stats['fail'], self.stats['skipped'], self.stats['deleted']))
+        print("** Finished Torrent Backup **")
+
+
+if __name__ == "__main__":
+    backup = BackupTorrents()
+    backup.run_backup()
