@@ -4,8 +4,8 @@ import platform
 
 
 dirs = {
-    "src": {"Windows": "F:/test_dir/", "Linux": "/mnt/ShortTerm/torrents/"},
-    "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos/"}
+    "src": {"Windows": "F:/test_dir/", "Linux": "/mnt/ShortTerm/torrents"},
+    "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
 }
 finished = []
 ver = platform.system()
@@ -23,8 +23,9 @@ for f in files:
         if os.path.isdir(src):
             shutil.copytree(src, dst, False, None)
         else:
-            shutil.copy2(src, dst)
+            shutil.copyfile(src, dst)
         stats['pass'] += 1
+        print("Copied {} to {}".format(f, dirs['dst'][ver]))
     else:
         print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
         stats['fail'] += 1
