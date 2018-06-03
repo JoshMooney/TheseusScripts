@@ -3,8 +3,13 @@ import os
 import platform
 
 
+def already_exist(_dir):
+    if os.path.isdir(_dir) or os.path.isfile(_dir):
+        return True
+    return False
+
 dirs = {
-    "src": {"Windows": "F:/test_dir/", "Linux": "/mnt/ShortTerm/torrents"},
+    "src": {"Windows": "F:/", "Linux": "/mnt/ShortTerm/torrents"},
     "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
 }
 finished = []
@@ -13,22 +18,26 @@ ignore_dirs = ["_incomplete", "In_Progress", "$RECYCLE.BIN"]
 
 files = [d for d in os.listdir(dirs['src'][ver])]
 files = filter(lambda x: x not in ignore_dirs, files)
-stats = {"pass": 0, "fail": 0}
+stats = {"pass": 0, "fail": 0, "skipped": 0}
 
 for f in files:
     if os.path.isdir(dirs['dst'][ver]):
-        print f
         src = os.path.join(dirs['src'][ver], f)
         dst = os.path.join(dirs['dst'][ver], f)
+
+        if already_exist(dst):
+            print("The file {} already exists in the directory {}".format(f, dst))
+            stats['skipped'] += 1
+            continue
         if os.path.isdir(src):
             shutil.copytree(src, dst, False, None)
         else:
             shutil.copyfile(src, dst)
-        stats['pass'] += 1
         print("Copied {} to {}".format(f, dirs['dst'][ver]))
+        stats['pass'] += 1
     else:
         print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
         stats['fail'] += 1
 
-print("** {} files copied, {} files failed **.".format(stats['pass'], stats['fail']))
+print("** {} files copied, {} files failed and {} files skipped **.".format(stats['pass'], stats['fail'], stats['skipped']))
 
