@@ -22,7 +22,7 @@ files = filter(lambda x: x not in ignore_dirs, files)
 stats = {"pass": 0, "fail": 0, "skipped": 0}
 file_count = 0
 
-copy_complete_file = open('copy_complete.dat', 'w+')
+copy_complete_file = open('copy_complete.dat', 'a+')
 
 for f in files:
     file_count += 1
@@ -30,12 +30,20 @@ for f in files:
         src = os.path.join(dirs['src'][ver], f)
         dst = os.path.join(dirs['dst'][ver], f)
 
-        print("Copying {} file {} of {}".format(f, file_count, len(files)))
         if already_exist(dst):
-            print("The file {} already exists in the directory {}".format(f, dst))
+            marked = False
+            for line in copy_complete_file.readlines():
+               if f in line:
+                  marked = True
+                  break
+            addon = ""
+            if marked:
+               addon = " and is marked for deletion"
+            print("The file {} already exists in the directory {}".format(f, dst) + addon)
             stats['skipped'] += 1
             continue
-        try:
+        print("Copying {} file {} of {}".format(f, file_count, len(files)))
+	try:
             if os.path.isdir(src):
                 shutil.copytree(src, dst, False, None)
             else:
@@ -60,4 +68,4 @@ for f in files:
     print("")
 
 print("** {} files copied, {} files failed and {} files skipped **.".format(stats['pass'], stats['fail'], stats['skipped']))
-copy_complete_file.write("stats=successful:{},failed:{},skipped:{}". format(stats['pass'], stats['fsil'], stats['skipped']))
+copy_complete_file.write("stats=successful:{},failed:{},skipped:{}". format(stats['pass'], stats['fail'], stats['skipped']))
