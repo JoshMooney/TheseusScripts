@@ -12,6 +12,7 @@ def CheckJoin(self):
 	if len(userIP.keys()) < 2:
 		userIP[self.request.remote_ip] = self
 		msg["type"]="Joined"; #set your type here
+		print(userIP + "Joined and checked");
 		if len(userIP.keys())  == 1:
 			msg["data"]="WAITING_FOR_PLAYERS";
 			msg["ID"] = len(userIP.keys())
@@ -49,6 +50,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 		print("Connection Closed")
 
 	def on_message(self, message):
+		print("HI")
 		R = json.loads(message)
 		if R['request'] == 'join':
 			CheckJoin(self)
