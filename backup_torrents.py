@@ -4,7 +4,7 @@ import platform
 
 
 dirs = {
-    "src": {"Windows": "F:/test_dir/", "Linux": "/mnt/ShortTerm/torrents"},
+    "src": {"Windows": "F:/test_dir/", "Linux": "/mnt/ShortTerm/torrents/"},
     "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos/"}
 }
 finished = []
@@ -18,7 +18,7 @@ stats = {"pass": 0, "fail": 0}
 for f in files:
     if os.path.isdir(dirs['dst'][ver]):
         print f
-        shutil.copyfile(dirs['src'][ver], dirs['dst'][ver])
+        shutil.copyfile(dirs['src'][ver], "{}/{}".format(dirs['dst'][ver], f))
         stats['pass'] += 1
     else:
         print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
