@@ -49,7 +49,7 @@ for f in files:
             else:
                 shutil.copyfile(src, dst)
             print("Copied {} to {} and was marked".format(f, dirs['dst'][ver]))
-            copy_complete_file.write(f"\n")
+            copy_complete_file.write(f+"\n")
             stats['pass'] += 1
         except OSError as error:
             print("Error copying with shutil, attempting terminal")
@@ -65,5 +65,5 @@ for f in files:
         print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
         stats['skipped'] += 1
 
-print("** {} files copied, {} files failed and {} files skipped ** \n\n".format(stats['pass'], stats['fail'], stats['skipped']))
+print("** Processed {} files: {} files copied, {} files failed and {} files skipped ** \n\n".format(len(files), stats['pass'], stats['fail'], stats['skipped']))
 copy_complete_file.write("stats=successful:{},failed:{},skipped:{} \n\n". format(stats['pass'], stats['fail'], stats['skipped']))
