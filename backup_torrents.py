@@ -18,7 +18,12 @@ stats = {"pass": 0, "fail": 0}
 for f in files:
     if os.path.isdir(dirs['dst'][ver]):
         print f
-        shutil.copyfile(dirs['src'][ver], "{}/{}".format(dirs['dst'][ver], f))
+        src = os.path.join(dirs['src'][ver], f)
+        dst = os.path.join(dirs['dst'][ver], f)
+        if os.path.isdir(src):
+            shutil.copytree(src, dst, False, None)
+        else:
+            shutil.copy2(src, dst)
         stats['pass'] += 1
     else:
         print("Destination directory {} was not accessible".format(dirs['dst'][ver]))
