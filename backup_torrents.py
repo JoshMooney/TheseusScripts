@@ -73,7 +73,7 @@ class BackupTorrents(object):
                 else:
                     print("    Copying {} file {} of {}".format(f, file_count, len(self.files)))
                     result = self.copy_file(f, src, dst)
-                    print("    Successfully copied {} to {} and was marked".format(f, self.dirs['dst'][self.ver]))
+                    print("    {} {} to {}".format("Successfully copied" if result else "Failed to copy", f, self.dirs['dst'][self.ver]))
 
                 if result:
                     print("    Deleteing {}".format(f))
@@ -84,10 +84,14 @@ class BackupTorrents(object):
             else:
                 print("    Destination directory {} was not accessible".format(self.dirs['dst'][self.ver]))
                 self.stat_log('skipped')
-        print("Processed {} files: \n    - {} files copied,\n    - {} files failed,\n    - {} files skipped,\n    - {} deleted files".format(len(self.files), self.stats['pass'], self.stats['fail'], self.stats['skipped'], self.stats['deleted']))
+        print("Processed {} files: \n    - {} files copied,\n    - {} files failed,\n    - {} files skipped,\n    - {} deleted files"
+              .format(len(self.files), self.stats['pass'], self.stats['fail'], self.stats['skipped'], self.stats['deleted']))
         print("** Finished Torrent Backup **")
 
 
 if __name__ == "__main__":
     backup = BackupTorrents()
-    backup.run_backup()
+    if os.geteuid() == 0:
+        backup.run_backup()
+    else:
+        print("Script wont run, it was run with user privileges rather than sudo")
