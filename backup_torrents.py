@@ -13,7 +13,7 @@ def already_exist(_dir):
 class BackupTorrents(object):
     def __init__(self):
         self.dirs = {
-            "src": {"Windows": "F:/test_dir", "Linux": "/mnt/ShortTerm/torrents"},
+            "src": {"Windows": "F:/test_dir", "Linux": "/RAID-cache/torrents"},
             "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
         }
         self.finished = []
@@ -45,8 +45,12 @@ class BackupTorrents(object):
         try:
             if os.path.isdir(src):
                 shutil.copytree(src, dst, False, None)
+                if not os.path.isdir(dst):
+                    raise Exception("    {} was not found durning copy verification and will not be deleted".format(f))
             else:
                 shutil.copyfile(src, dst)
+                if not os.path.exists(dst):
+                   raise Exception("    {} was not found durning copy verification and will not be deleted".format(f))
             self.stat_log('pass')
             return True
         except Exception as error:
@@ -77,16 +81,20 @@ class BackupTorrents(object):
 
                 if result:
                     print("    Deleteing {}".format(f))
-                    self.delete_file(src)
+                    result = self.delete_file(src)
+
+                if result:
                     print("    Successfully deleted {}".format(f))
                 else:
                     print("    File did not copy and was not deleted")
             else:
                 print("    Destination directory {} was not accessible".format(self.dirs['dst'][self.ver]))
                 self.stat_log('skipped')
+            print("")
+        print("** Finished Torrent Backup **")
+        print("")
         print("Processed {} files: \n    - {} files copied,\n    - {} files failed,\n    - {} files skipped,\n    - {} deleted files"
               .format(len(self.files), self.stats['pass'], self.stats['fail'], self.stats['skipped'], self.stats['deleted']))
-        print("** Finished Torrent Backup **")
 
 
 if __name__ == "__main__":

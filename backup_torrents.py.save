@@ -1,0 +1,22 @@
+import shutil
+import os
+
+src = "/mnt/ShortTerm/torrents"
+des_dir = "Aegon somewhere"
+
+finished = []
+
+files = [x[0] for x in os.walk(src)]
+
+for f in files:
+    print src
+    print f
+    
+`	if "_incomplete" not in f or src == f:
+        print f
+
+    # Verify Aegon
+    # try copy to Aegon if connected
+
+#print progress
+
