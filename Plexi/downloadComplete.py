@@ -1,6 +1,8 @@
 import requests
 import json
 
+# Some reading to do here: https://lifehacker.com/how-can-i-start-and-shut-down-my-computer-automatically-5831504
+
 def pushbullet_message(title, body):
     msg = {"type": "note", "title": title, "body": body}
     TOKEN = 'o.3Mqby3o8MCisITwU7n4COlNxpM2O9W21'
