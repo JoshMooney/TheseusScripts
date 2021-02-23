@@ -12,7 +12,7 @@ def already_exist(_dir):
 class BackupTorrents(object):
     def __init__(self):
         self.dirs = {
-            "src": {"Windows": "F:/test_dir", "Linux": "/RAID-cache/torrents"},
+            "src": {"Windows": "F:/test_dir", "Linux": "/home/plexi/Projects/TheseusScripts/PiesuesBackup"},
             "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
         }
         self.finished = []
