@@ -42,13 +42,13 @@ check_service('transmission-daemon', {'name': 'TRANSMISSION', 'msg': 'Status of 
 
 
 def _check_mounted_drives():
-    drives = [{"name": "Aegon",     "path": "/mnt/Aegon"}]
+    drives = [{"name": "Aegon", "path": "/mnt/Aegon"}]
     
     for d in drives:
         is_mounted = False
         if os.path.ismount(d['path']):
             is_mounted = True
-        log(d['name'], d['name'] + ' is mounted @' + d['path'], is_mounted)
+        log(d['name'], d['name'] + ' is mounted @ ' + d['path'], is_mounted)
     row_log()
             
 _check_mounted_drives() 

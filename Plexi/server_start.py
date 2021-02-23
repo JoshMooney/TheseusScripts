@@ -18,7 +18,7 @@ def execute():
 def _run_samba():
    print('Starting Samba')
    try:
-       status = subprocess.check_output("sudo /etc/init.d/samba start", shell=True)
+       status = subprocess.check_output("sudo service smbd start", shell=True)
    except Exception, e:
        print ('Error starting Samba: ', e)
    print('')
