@@ -3,6 +3,17 @@ import os
 import platform
 import subprocess
 import re
+import argparse
+
+script_args = None
+
+def load_args():
+    global script_args
+    parser = argparse.ArgumentParser(description='Backs up the files located in the source directory, to the target directory. These will be sorted using regex on the name to determine if they should be moved into a TV Shows or Movies subfolder. If this cannot be determined they are copied into the taget directory. This is to be a utility for the Plexi Plex home server')
+    parser.add_argument('--notify', help='Notify on completion')
+
+    script_args = parser.parse_args()
+    print(script_args.notify)
 
 def already_exist(_dir):
     if os.path.isdir(_dir) or os.path.isfile(_dir):
@@ -12,8 +23,8 @@ def already_exist(_dir):
 class BackupTorrents(object):
     def __init__(self):
         self.dirs = {
-            "src": {"Windows": "F:/test_dir", "Linux": "/home/plexi/Projects/TheseusScripts/PiesuesBackup"},
-            "dst": {"Windows": "F:/", "Linux": "/mnt/Aegon/Videos"}
+            "src": {"Windows": "E:/Development/Python/Test/Source", "Linux": "/home/plexi/Transmission/complete"},
+            "dst": {"Windows": "E:/Development/Python/Test", "Linux": "/mnt/Aegon/Videos"}
         }
         self.finished = []
         self.ver = platform.system()
@@ -76,14 +87,43 @@ class BackupTorrents(object):
     def stat_log(self, type):
         self.stats[type] += 1
 
-    def run_backup(self):
+    def notify(self, msgs):
+        shouldNotify = True     # Change to be flag later
+        if not shouldNotify:
+            return
+        pushMsgTitle = "backup_media"
+        pushMsg = "Copy complete, the following were moved to Aegon:\n"
+
+        for msg in msgs:
+            pushMsg += "- {} was copied to {}".format(msg["file"], msg["dst"])
+        
+        # Build request
+        msg = {
+            "type": "note", 
+            "title": pushMsgTitle, 
+            "body": pushMsg
+        }
+        TOKEN = 'o.3Mqby3o8MCisITwU7n4COlNxpM2O9W21'
+        resp = requests.post('https://api.pushbullet.com/v2/pushes', 
+                            data=json.dumps(msg),
+                            headers={'Authorization': 'Bearer ' + TOKEN,
+                                    'Content-Type': 'application/json'})
+        if resp.status_code != 200:
+            raise Exception('Error',resp.status_code)
+        else:
+            print('Notify message sent') 
+
+    def backup(self):
         file_count = 0
-        print("** Starting Torrent Backup **")
+        copyMessages = []
+
         for f in self.files:
+            msg = {"file": f}
             file_count += 1
             if os.path.isdir(self.dirs['dst'][self.ver]):
                 src = os.path.join(self.dirs['src'][self.ver], f)
                 dst = self.get_destination_directory(f)
+                msg["dst"] = dst
 
                 if already_exist(dst):
                     print("    The file {} already exists in the directory {} skipping".format(f, dst))
@@ -98,6 +138,7 @@ class BackupTorrents(object):
                     print("    Deleteing {}".format(f))
                     self.delete_file(src)
                     print("    Successfully deleted {}".format(f))
+                    copyMessages.append(msg)
                 else:
                     print("    File did not copy and was not deleted")
             else:
@@ -105,10 +146,22 @@ class BackupTorrents(object):
                 self.stat_log('skipped')
         print("Processed {} files: \n    - {} files copied,\n    - {} files failed,\n    - {} files skipped,\n    - {} deleted files"
               .format(len(self.files), self.stats['pass'], self.stats['fail'], self.stats['skipped'], self.stats['deleted']))
+        notify(copyMessages)
+
+    def run_backup(self):
+        print("** Starting Torrent Backup **")
+
+        if len(self.files) == 0:
+            print("Nothing to copy")
+            return
+        else:
+            backup()
+
         print("** Finished Torrent Backup **")
 
 
 if __name__ == "__main__":
+    load_args()
     backup = BackupTorrents()
 
     if os.geteuid() == 0:

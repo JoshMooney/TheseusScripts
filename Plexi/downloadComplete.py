@@ -3,8 +3,14 @@ import json
 
 # Some reading to do here: https://lifehacker.com/how-can-i-start-and-shut-down-my-computer-automatically-5831504
 
+# Wrong link above try: https://docs.pushbullet.com/
+
 def pushbullet_message(title, body):
-    msg = {"type": "note", "title": title, "body": body}
+    msg = {
+        "type": "note", 
+        "title": title, 
+        "body": body
+    }
     TOKEN = 'o.3Mqby3o8MCisITwU7n4COlNxpM2O9W21'
     resp = requests.post('https://api.pushbullet.com/v2/pushes', 
                          data=json.dumps(msg),
@@ -15,4 +21,6 @@ def pushbullet_message(title, body):
     else:
         print ('Message sent') 
 
-pushbullet_message("Test Title", "This is a test of a body /n how well does it handle complex \n text.")
+if __name__ == "__main__":
+    print("Sending Test notification")
+    pushbullet_message("Test Title", "This is a test of a body /n how well does it handle complex \n text.")
