@@ -4,6 +4,9 @@ import platform
 import subprocess
 import re
 import argparse
+import requests
+import json
+
 
 script_args = None
 
