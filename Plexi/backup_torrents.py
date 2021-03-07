@@ -146,7 +146,7 @@ class BackupTorrents(object):
                 self.stat_log('skipped')
         print("Processed {} files: \n    - {} files copied,\n    - {} files failed,\n    - {} files skipped,\n    - {} deleted files"
               .format(len(self.files), self.stats['pass'], self.stats['fail'], self.stats['skipped'], self.stats['deleted']))
-        notify(copyMessages)
+        self.notify(copyMessages)
 
     def run_backup(self):
         print("** Starting Torrent Backup **")
@@ -155,7 +155,7 @@ class BackupTorrents(object):
             print("Nothing to copy")
             return
         else:
-            backup()
+            self.backup()
 
         print("** Finished Torrent Backup **")
 
